@@ -29,8 +29,6 @@ public class Migration {
 
     private String table;
 
-    private String value;
-
     private Date updateAt;
 
     public String getTable() {
@@ -41,23 +39,11 @@ public class Migration {
         this.table = table;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     public Date getUpdateAt() {
         return updateAt;
     }
 
     public void setUpdateAt(Date updateAt) {
         this.updateAt = updateAt;
-    }
-
-    public boolean isEmpty() {
-        return getValue() == null || getTable().isEmpty();
     }
 }

@@ -23,10 +23,23 @@
  */
 package pe.org.incn.sqlsrvmigrator.config;
 
-/**
- *
- * @author enea dhack
- */
 public enum Conection {
-    
+    SISMED("SISMED", Driver.DBF),
+    ROCHE("ROCHE", Driver.DOCUMENT);
+
+    private final String name;
+    private final Driver driver;
+
+    private Conection(String name, Driver driver) {
+        this.name = name;
+        this.driver = driver;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Driver getDriver() {
+        return driver;
+    }
 }

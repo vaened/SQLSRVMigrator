@@ -24,6 +24,7 @@
 package pe.org.incn.sqlsrvmigrator;
 
 import java.io.FileNotFoundException;
+import java.text.ParseException;
 import org.yaml.snakeyaml.Yaml;
 import pe.org.incn.sqlsrvmigrator.config.Config;
 import pe.org.incn.sqlsrvmigrator.connection.Connector;
@@ -33,6 +34,8 @@ import pe.org.incn.sqlsrvmigrator.connection.Reader;
 import pe.org.incn.sqlsrvmigrator.connection.Truncator;
 import pe.org.incn.sqlsrvmigrator.connection.statements.Filler;
 import pe.org.incn.sqlsrvmigrator.connection.statements.InsertQueryBuilder;
+import pe.org.incn.sqlsrvmigrator.database.Compiler;
+import pe.org.incn.sqlsrvmigrator.groups.Queue;
 
 /**
  *
@@ -40,22 +43,22 @@ import pe.org.incn.sqlsrvmigrator.connection.statements.InsertQueryBuilder;
  */
 public class Server {
 
-	public static void main(String[] args)
-			throws InstantiationException, IllegalAccessException, FileNotFoundException {
-		Config config = new Config(new Yaml());
-		BuilderFactory factory = new BuilderFactory(config);
-		Presenter presenter = new Presenter();
-		Connector connector = new Connector();
-		Reader reader = new Reader();
-		Follower follower = new Follower(config, reader);
-		Dumper dumper = new Dumper(new InsertQueryBuilder(), follower, new Filler());
-		Truncator truncator = new Truncator();
-		Management management = new Management(config, factory, connector, dumper, presenter, reader, truncator);
-		Binding binding = new Binding();
+    public static void main(String[] args)
+            throws InstantiationException, IllegalAccessException, FileNotFoundException, ParseException {
 
-		management.migrate(binding.getClasses());
-		
-		System.exit(0);
+        Container.setConfig(new Config(new Yaml()));
+        Container.setConnector(new Connector());
 
-	}
+        Queue queue = new Queue();
+        Canvas canvas = new Canvas();
+        Reader reader = new Reader();
+        Dumper dumper = new Dumper(new InsertQueryBuilder(), new Follower(reader), new Filler());
+        Truncator truncator = new Truncator();
+        Manager manager = new Manager(dumper, reader, truncator);
+
+        canvas.target(queue);
+        queue.getQueue().forEach((Compiler compiler) -> manager.migrate(compiler));
+
+        System.exit(0);
+    }
 }

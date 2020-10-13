@@ -70,5 +70,4 @@ public class Database {
     public void setPort(String port) {
         this.port = port;
     }
-
 }

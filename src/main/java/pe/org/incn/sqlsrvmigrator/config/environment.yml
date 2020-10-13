@@ -9,10 +9,25 @@ databases:
         password: Sismed.123
         port: 1433
 
+    -
+        name: ROCHE
+        server: 192.168.10.11
+        username: enea
+        password: nanov
+        port: 1433
+
 sources:
     -
         name: sismed
-        driver: DBF
         database: SISMED
-        enabled: true
+        enabled: false
         path: \\192.168.13.24\Users\efloresp\Desktop\A\
+
+    -
+        name: roche
+        database: ROCHE
+        enabled: true
+        path: C:\Users\efloresp\Desktop\sources\roche\
+        options:
+            clean_when_finished: true
+            restrict_extension: .res

@@ -23,99 +23,67 @@
  */
 package pe.org.incn.sqlsrvmigrator.core.sismed;
 
-import java.util.Date;
-import pe.org.incn.sqlsrvmigrator.database.Column;
-import pe.org.incn.sqlsrvmigrator.database.Model;
-import pe.org.incn.sqlsrvmigrator.database.Table;
+import java.util.List;
+import pe.org.incn.sqlsrvmigrator.database.components.Column;
+import pe.org.incn.sqlsrvmigrator.database.components.Model;
+import pe.org.incn.sqlsrvmigrator.database.components.Table;
 import pe.org.incn.sqlsrvmigrator.database.Type;
+import pe.org.incn.sqlsrvmigrator.database.components.Value;
 
-@Table(connection = "sismed", location = "tmovim", destination = "SISMED_TMOVIM")
+@Table(
+        connection = "sismed",
+        location = "tmovim",
+        destination = "SISMED_TMOVIM",
+        columns = {
+            @Column(source = "MOVCODITIP", type = Type.STRING),
+            @Column(source = "MOVNUMERO", type = Type.STRING),
+            @Column(source = "ALMCODIORG", type = Type.STRING),
+            @Column(source = "ALMORGVIR", type = Type.STRING),
+            @Column(source = "ALMCODIDST", type = Type.STRING),
+            @Column(source = "ALMDSTVIR", type = Type.STRING),
+            @Column(source = "MOVTIPODCI", type = Type.STRING),
+            @Column(source = "MOVNUMEDCI", type = Type.STRING),
+            @Column(source = "MOVTIPODCO", type = Type.STRING),
+            @Column(source = "MOVNUMEDCO", type = Type.STRING),
+            @Column(source = "CCTCODIGO", type = Type.STRING),
+            @Column(source = "CLICOD", type = Type.STRING),
+            @Column(source = "PCTCOD", type = Type.STRING),
+            @Column(source = "DIAGCOD", type = Type.STRING),
+            @Column(source = "PROGCOD", type = Type.STRING),
+            @Column(source = "PERCOD", type = Type.STRING),
+            @Column(source = "PRVNUMERUC", type = Type.STRING),
+            @Column(source = "PRVDESCRIP", type = Type.STRING),
+            @Column(source = "MOVREFE", type = Type.STRING),
+            @Column(source = "MOVINDPRC", type = Type.STRING),
+            @Column(source = "USRCODIGO", type = Type.STRING),
+            @Column(source = "MOVSITUA", type = Type.STRING),
+            @Column(source = "TIP_COMP", type = Type.STRING),
+            @Column(source = "TIP_PROC", type = Type.STRING),
+            @Column(source = "NUM_PROC", type = Type.STRING),
+            @Column(source = "MOVTIPEST", type = Type.STRING),
+            @Column(source = "MOVCODSUB", type = Type.STRING),
+            @Column(source = "MOVTIPREC", type = Type.STRING),
+            @Column(source = "MOTCOD", type = Type.STRING),
+            @Column(source = "MOVUSUANUL", type = Type.STRING),
+            @Column(source = "ID_PROCESO", type = Type.STRING),
+            @Column(source = "DNI_CLIE", type = Type.STRING),
+            @Column(source = "DIAGCOD1", type = Type.STRING),
+            @Column(source = "DIAGCOD2", type = Type.STRING),
+            @Column(source = "MOVENVIO", type = Type.STRING),
+            @Column(source = "MOVFECHREC", type = Type.DATE),
+            @Column(source = "MOVFECHEMI", type = Type.DATE),
+            @Column(source = "MOVFECHREG", type = Type.DATE),
+            @Column(source = "MOVFECHULT", type = Type.DATE),
+            @Column(source = "MOVFECANUL", type = Type.DATE)
+        })
 public class Movement extends Model {
 
-    @Column(name = "MOVNUMEPED", type = Type.INTEGER)
-    int MOVNUMEPED;
-    @Column(name = "MOVTOT", type = Type.INTEGER)
-    int MOVTOT;
+    public Movement(List<Value> values) {
+        super(values);
+    }
 
-    @Column(name = "MOVCODITIP", type = Type.STRING)
-    String MOVCODITIP;
-    @Column(name = "MOVNUMERO", type = Type.STRING)
-    String MOVNUMERO;
-    @Column(name = "ALMCODIORG", type = Type.STRING)
-    String ALMCODIORG;
-    @Column(name = "ALMORGVIR", type = Type.STRING)
-    String ALMORGVIR;
-    @Column(name = "ALMCODIDST", type = Type.STRING)
-    String ALMCODIDST;
-    @Column(name = "ALMDSTVIR", type = Type.STRING)
-    String ALMDSTVIR;
-    @Column(name = "MOVTIPODCI", type = Type.STRING)
-    String MOVTIPODCI;
-    @Column(name = "MOVNUMEDCI", type = Type.STRING)
-    String MOVNUMEDCI;
-    @Column(name = "MOVTIPODCO", type = Type.STRING)
-    String MOVTIPODCO;
-    @Column(name = "MOVNUMEDCO", type = Type.STRING)
-    String MOVNUMEDCO;
-    @Column(name = "CCTCODIGO", type = Type.STRING)
-    String CCTCODIGO;
-    @Column(name = "CLICOD", type = Type.STRING)
-    String CLICOD;
-    @Column(name = "PCTCOD", type = Type.STRING)
-    String PCTCOD;
-    @Column(name = "DIAGCOD", type = Type.STRING)
-    String DIAGCOD;
-    @Column(name = "PROGCOD", type = Type.STRING)
-    String PROGCOD;
-    @Column(name = "PERCOD", type = Type.STRING)
-    String PERCOD;
-    @Column(name = "PRVNUMERUC", type = Type.STRING)
-    String PRVNUMERUC;
-    @Column(name = "PRVDESCRIP", type = Type.STRING)
-    String PRVDESCRIP;
-    @Column(name = "MOVREFE", type = Type.STRING)
-    String MOVREFE;
-    @Column(name = "MOVINDPRC", type = Type.STRING)
-    String MOVINDPRC;
-    @Column(name = "USRCODIGO", type = Type.STRING)
-    String USRCODIGO;
-    @Column(name = "MOVSITUA", type = Type.STRING)
-    String MOVSITUA;
-    @Column(name = "TIP_COMP", type = Type.STRING)
-    String TIP_COMP;
-    @Column(name = "TIP_PROC", type = Type.STRING)
-    String TIP_PROC;
-    @Column(name = "NUM_PROC", type = Type.STRING)
-    String NUM_PROC;
-    @Column(name = "MOVTIPEST", type = Type.STRING)
-    String MOVTIPEST;
-    @Column(name = "MOVCODSUB", type = Type.STRING)
-    String MOVCODSUB;
-    @Column(name = "MOVTIPREC", type = Type.STRING)
-    String MOVTIPREC;
-    @Column(name = "MOTCOD", type = Type.STRING)
-    String MOTCOD;
-    @Column(name = "MOVUSUANUL", type = Type.STRING)
-    String MOVUSUANUL;
-    @Column(name = "ID_PROCESO", type = Type.STRING)
-    String ID_PROCESO;
-    @Column(name = "DNI_CLIE", type = Type.STRING)
-    String DNI_CLIE;
-    @Column(name = "DIAGCOD1", type = Type.STRING)
-    String DIAGCOD1;
-    @Column(name = "DIAGCOD2", type = Type.STRING)
-    String DIAGCOD2;
-    @Column(name = "MOVENVIO", type = Type.STRING)
-    String MOVENVIO;
-    
-    @Column(name = "MOVFECHREC", type = Type.DATE)
-    Date MOVFECHREC;
-    @Column(name = "MOVFECHEMI", type = Type.DATE)
-    Date MOVFECHEMI;
-    @Column(name = "MOVFECHREG", type = Type.DATE)
-    Date MOVFECHREG;
-    @Column(name = "MOVFECHULT", type = Type.DATE)
-    Date MOVFECHULT;
-    @Column(name = "MOVFECANUL", type = Type.DATE)
-    Date MOVFECANUL;
+
+    public String getSequencialUniqueValue() {
+        return getValueAttribute("MOVNUMERO").getStringValue();
+    }
 }

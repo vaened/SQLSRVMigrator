@@ -27,10 +27,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Date;
+import pe.org.incn.sqlsrvmigrator.Container;
 import pe.org.incn.sqlsrvmigrator.config.Config;
-import pe.org.incn.sqlsrvmigrator.database.Model;
-import pe.org.incn.sqlsrvmigrator.database.Orderable;
-import pe.org.incn.sqlsrvmigrator.database.Table;
+import pe.org.incn.sqlsrvmigrator.database.components.Table;
 
 public class Follower {
 
@@ -38,50 +38,39 @@ public class Follower {
 
     private final Reader reader;
 
-    public Follower(Config config, Reader reader) {
-        this.config = config;
+    public Follower(Reader reader) {
+        this.config = Container.getConfig();
         this.reader = reader;
     }
 
-    public void leaveTrace(Connection connection, Model lastModel) throws SQLException {
-        Class<? extends Model> clazz = lastModel.getClass();
-        Table table = clazz.getAnnotation(Table.class);
-        Migration migration = getMigration(connection, table);
-
-        if (migration.isEmpty()) {
-            createCrumb(connection, (Orderable) lastModel, table);
-            return;
+    public void leaveTrace(Connection connection, Table table) throws SQLException {
+        if (reader.hasMigration(connection, table)) {
+            updateCrumb(connection, table);
+        } else {
+            createCrumb(connection, table);
         }
-
-        updateCrumb(connection, (Orderable) lastModel, table);
     }
 
-    private void updateCrumb(Connection connection, Orderable lastModel, Table table) throws SQLException {
-        String queryString = String.format("UPDATE %s set value = ?, updated_at= ? where table_name = ?", config.table());
+    private void updateCrumb(Connection connection, Table table) throws SQLException {
+        String queryString = String.format("UPDATE %s set updated_at= ? where table_name = ?", config.table());
         try (PreparedStatement statement = connection.prepareStatement(queryString)) {
-            statement.setString(1, lastModel.getOrdererValue());
-            statement.setTimestamp(2, getCurrentTimestamp());
-            statement.setString(3, getSQLTable(table));
+            statement.setTimestamp(1, getCurrentTimestamp());
+            statement.setString(2, getSQLTable(table));
             statement.execute();
         }
     }
 
-    private void createCrumb(Connection connection, Orderable lastModel, Table table) throws SQLException {
-        String queryString = String.format("INSERT INTO %s (table_name, value, updated_at) values(?,?,?)", config.table());
+    private void createCrumb(Connection connection, Table table) throws SQLException {
+        String queryString = String.format("INSERT INTO %s (table_name, updated_at) values(?,?)", config.table());
         try (PreparedStatement statement = connection.prepareStatement(queryString)) {
             statement.setString(1, getSQLTable(table));
-            statement.setString(2, lastModel.getOrdererValue());
-            statement.setTimestamp(3, getCurrentTimestamp());
+            statement.setTimestamp(2, getCurrentTimestamp());
             statement.execute();
         }
-    }
-
-    private Migration getMigration(Connection connection, Table table) {
-        return reader.migration(connection, table);
     }
 
     private Timestamp getCurrentTimestamp() {
-        return new Timestamp(new java.util.Date().getTime());
+        return new Timestamp(new Date().getTime());
     }
 
     private String getSQLTable(Table table) {

@@ -23,6 +23,7 @@
  */
 package pe.org.incn.sqlsrvmigrator.database;
 
+import pe.org.incn.sqlsrvmigrator.database.components.Model;
 import pe.org.incn.sqlsrvmigrator.connection.Migration;
 
 public interface Orderable<T extends Model> extends Comparable<T> {

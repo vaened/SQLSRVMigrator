@@ -24,31 +24,30 @@
 package pe.org.incn.sqlsrvmigrator.database.dbf;
 
 import com.linuxense.javadbf.DBFRow;
-import pe.org.incn.sqlsrvmigrator.database.Column;
+import pe.org.incn.sqlsrvmigrator.database.components.Column;
 
-/**
- *
- * @author enea dhack
- */
 public class DBFAttributeCaster {
 
-	public Object cast(DBFRow row, Column column) {
+    public Object cast(DBFRow row, Column column) {
 
-		switch (column.type()) {
-		case STRING:
-			return row.getString(column.name());
+        switch (column.type()) {
+            case STRING:
+                return row.getString(column.source());
 
-		case FLOAT:
-			return row.getFloat(column.name());
+            case FLOAT:
+                return row.getFloat(column.source());
 
-		case INTEGER:
-			return row.getInt(column.name());
+            case INTEGER:
+                return row.getInt(column.source());
 
-		case DATE:
-			return row.getDate(column.name());
+            case DATE:
+                return row.getDate(column.source());
 
-		default:
-			return null;
-		}
-	}
+            case BOOLEAN:
+                return row.getBoolean(column.source());
+
+            default:
+                return null;
+        }
+    }
 }

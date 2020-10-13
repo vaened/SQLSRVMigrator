@@ -23,22 +23,20 @@
  */
 package pe.org.incn.sqlsrvmigrator.connection;
 
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import pe.org.incn.sqlsrvmigrator.connection.statements.Filler;
 import pe.org.incn.sqlsrvmigrator.connection.statements.InsertQueryBuilder;
 import pe.org.incn.sqlsrvmigrator.connection.statements.MigrationException;
-import pe.org.incn.sqlsrvmigrator.database.Table;
-import pe.org.incn.sqlsrvmigrator.database.Model;
+import pe.org.incn.sqlsrvmigrator.database.components.Table;
+import pe.org.incn.sqlsrvmigrator.database.components.Model;
 import pe.org.incn.sqlsrvmigrator.database.Orderable;
+import pe.org.incn.sqlsrvmigrator.database.components.Value;
 
-public class Dumper<T extends Model> {
+public class Dumper {
 
     private final int limitBatch = 1000;
     private final InsertQueryBuilder query;
@@ -51,68 +49,57 @@ public class Dumper<T extends Model> {
         this.filler = filler;
     }
 
-    public Integer execute(Connection connection, Class<T> clazz, List<T> values) throws IllegalArgumentException, IllegalAccessException, MigrationException, NoSuchFieldException {
+    public Integer execute(Connection connection, Table table, List<Model> values) throws MigrationException {
         validateConnection(connection);
         if (values.isEmpty()) {
             return 0;
         }
-        return insert(connection, clazz, values);
+        return insert(connection, table, values);
     }
 
-    private int insert(Connection connection, Class<T> clazz, List<T> models) throws IllegalArgumentException, IllegalAccessException, MigrationException, NoSuchFieldException {
+    private int insert(Connection connection, Table table, List<Model> models) throws MigrationException {
         int currentRecord = 0;
-        Field[] fields = getFields(clazz);
-        String queryString = createQueryString(clazz, fields);
+        String queryString = query.getQueryString(table);
 
         try (PreparedStatement statement = connection.prepareStatement(queryString)) {
             connection.setAutoCommit(false);
-            for (T model : models) {
-                setStatementValues(fields, statement, model);
+            for (Model model : models) {
                 currentRecord++;
-                if (currentRecord % limitBatch == 0 || currentRecord == models.size()) {
+                setStatementValues(statement, model);
+                if (isBatchLimitReached(currentRecord, models.size())) {
                     statement.executeBatch();
                 }
             }
 
-            if (models.get(0) instanceof Orderable) {
-                follower.leaveTrace(connection, getLatestModel(models));
-            }
-
+            follower.leaveTrace(connection, table);
             connection.commit();
         } catch (SQLException ex) {
             currentRecord = 0;
-            throwMigrationException(clazz, ex);
+            throwMigrationException(table, ex);
         }
 
         return currentRecord;
     }
 
-    private Model getLatestModel(List<T> models) {
+    private boolean isBatchLimitReached(int currentRecord, int totalModelSize) {
+        return currentRecord == totalModelSize || currentRecord % limitBatch == 0;
+    }
+
+    private Model getLatestModel(List<Model> models) {
         return models.stream().sorted().collect(Collectors.toList()).get(models.size() - 1);
     }
 
-    private Field[] getFields(Class<T> clazz) throws NoSuchFieldException {
-        List<Field> arrayListfields = new ArrayList<Field>(Arrays.asList(clazz.getDeclaredFields()));
-        arrayListfields.add(Model.class.getField("deleted"));
-        return arrayListfields.toArray(new Field[arrayListfields.size()]);
-    }
-
-    private void setStatementValues(Field[] fields, PreparedStatement statement, T model) throws SQLException, IllegalArgumentException, IllegalAccessException {
+    private void setStatementValues(PreparedStatement statement, Model model) throws SQLException {
         int parameter = 1;
-        for (Field field : fields) {
-            filler.setValue(model, field, statement, parameter++);
+        for (Value value : model.values()) {
+            filler.setValue(value, statement, parameter++);
         }
+        statement.setString(parameter++, model.getUUID());
         statement.addBatch();
     }
 
-    private String createQueryString(Class<T> clazz, Field[] fields) {
-        Table table = clazz.getAnnotation(Table.class);
-        return this.query.getQueryString(table, fields);
-    }
-
-    private void throwMigrationException(Class<T> clazz, SQLException ex) throws MigrationException {
-        Table table = clazz.getDeclaredAnnotation(Table.class);
-        String message = String.format("Couldn't execute the migration of the [%s] table", table.location());
+    private void throwMigrationException(Table table, SQLException ex) throws MigrationException {
+        String message = String.format("Couldn't execute data source migration [%s] to table [%s]", table.location(), table.destination());
         throw new MigrationException(String.format("%s: %s", message, ex.getMessage()), ex);
     }
 

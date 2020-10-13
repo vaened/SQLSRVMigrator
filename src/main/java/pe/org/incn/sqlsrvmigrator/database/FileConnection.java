@@ -23,18 +23,13 @@
  */
 package pe.org.incn.sqlsrvmigrator.database;
 
-import pe.org.incn.sqlsrvmigrator.config.Config;
+import pe.org.incn.sqlsrvmigrator.database.components.Table;
+import pe.org.incn.sqlsrvmigrator.Container;
 import pe.org.incn.sqlsrvmigrator.config.Source;
 
 abstract public class FileConnection {
 
-    private final Config config;
-
-    public FileConnection(Config config) {
-        this.config = config;
-    }
-
     protected Source getSourceFrom(Table table) {
-        return this.config.getSource(table.connection());
+        return Container.getConfig().getSource(table.connection());
     }
 }

@@ -23,108 +23,39 @@
  */
 package pe.org.incn.sqlsrvmigrator.core.sismed;
 
-import java.util.Date;
-import pe.org.incn.sqlsrvmigrator.database.Column;
-import pe.org.incn.sqlsrvmigrator.database.Table;
+import java.util.List;
+import pe.org.incn.sqlsrvmigrator.database.components.Column;
+import pe.org.incn.sqlsrvmigrator.database.components.Table;
 import pe.org.incn.sqlsrvmigrator.database.Type;
-import pe.org.incn.sqlsrvmigrator.database.Model;
+import pe.org.incn.sqlsrvmigrator.database.components.Model;
+import pe.org.incn.sqlsrvmigrator.database.components.Value;
 
-/**
- *
- * @author enea dhack
- */
-@Table(connection = "sismed", location = "MMEDICAM", destination = "SISMED_MMEDICAM")
+@Table(
+        connection = "sismed",
+        location = "MMEDICAM",
+        destination = "SISMED_MMEDICAM",
+        columns = {
+            @Column(source = "MEDNOM", type = Type.STRING),
+            @Column(source = "MEDPRES", type = Type.STRING),
+            @Column(source = "MEDCNC", type = Type.STRING),
+            @Column(source = "MEDTIP", type = Type.STRING),
+            @Column(source = "MEDPET", type = Type.STRING),
+            @Column(source = "MEDFF", type = Type.STRING),
+            @Column(source = "MEDEST", type = Type.STRING),
+            @Column(source = "MEDACT", type = Type.STRING),
+            @Column(source = "MEDINDVCTO", type = Type.STRING),
+            @Column(source = "FECHAUPD", type = Type.DATE),
+            @Column(source = "MEDESTVTA", type = Type.STRING),
+            @Column(source = "CODIGO_SIG", type = Type.STRING)
+        })
 public class Medicine extends Model {
 
-    @Column(name = "MEDCOD", type = Type.STRING)
-    private String medicineID;
-
-    @Column(name = "MEDNOM", type = Type.STRING)
-    private String name;
-
-    @Column(name = "MEDPRES", type = Type.STRING)
-    private String presentation;
-
-    @Column(name = "MEDCNC", type = Type.STRING)
-    private String medicineCNC;
-
-    @Column(name = "MEDTIP", type = Type.STRING)
-    private String type;
-
-    @Column(name = "MEDPET", type = Type.STRING)
-    private String medicinePET;
-
-    @Column(name = "MEDFF", type = Type.STRING)
-    private String medicineFF;
-
-    @Column(name = "MEDEST", type = Type.STRING)
-    private String medicineEST;
-
-    @Column(name = "MEDACT", type = Type.STRING)
-    private String medicineACT;
-
-    @Column(name = "MEDINDVCTO", type = Type.STRING)
-    private String medicineINDVCTO;
-
-    @Column(name = "FECHAUPD", type = Type.DATE)
-    private Date dateUPD;
-
-    @Column(name = "MEDESTVTA", type = Type.STRING)
-    private String medicineESTVTA;
-
-    @Column(name = "CODIGO_SIG", type = Type.STRING)
-    private String CodeSIG;
-
-    public String getMedicineID() {
-        return medicineID;
+    public Medicine(List<Value> values) {
+        super(values);
     }
 
-    public String getName() {
-        return name;
+    
+    public String getSequencialUniqueValue() {
+        return getValueAttribute("FECHAUPD").getStringValue();
     }
-
-    public String getPresentation() {
-        return presentation;
-    }
-
-    public String getMedicineCNC() {
-        return medicineCNC;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getMedicinePET() {
-        return medicinePET;
-    }
-
-    public String getMedicineFF() {
-        return medicineFF;
-    }
-
-    public String getMedicineEST() {
-        return medicineEST;
-    }
-
-    public String getMedicineACT() {
-        return medicineACT;
-    }
-
-    public String getMedicineINDVCTO() {
-        return medicineINDVCTO;
-    }
-
-    public Date getDateUPD() {
-        return dateUPD;
-    }
-
-    public String getMedicineESTVTA() {
-        return medicineESTVTA;
-    }
-
-    public String getCodeSIG() {
-        return CodeSIG;
-    }
-
 }

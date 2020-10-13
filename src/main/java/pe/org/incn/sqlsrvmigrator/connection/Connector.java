@@ -32,24 +32,19 @@ import pe.org.incn.sqlsrvmigrator.config.Database;
 
 public class Connector {
 
-    private Connection con = null;
-    private final String url = "jdbc:sqlserver://";
-
     public Connection getConnection(Database database) {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            con = DriverManager.getConnection(getConnectionUrl(database), database.getUsername(), database.getPassword());
-            if (con != null) {
-                System.out.println("Connection Successful!");
-            }
+            return DriverManager.getConnection(getConnectionUrl(database), database.getUsername(), database.getPassword());
         } catch (ClassNotFoundException | SQLException ex) {
             System.out.println("Error Trace in getConnection() : " + ex.getMessage());
             Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return con;
+
+        return null;
     }
 
     private String getConnectionUrl(Database database) {
-        return url + database.getServer() + ":" + database.getPort() + ";databaseName=" + database.getName() + ";";
+        return String.format("jdbc:sqlserver://%s:%s; databaseName = %s;", database.getServer(), database.getPort(), database.getName());
     }
 }

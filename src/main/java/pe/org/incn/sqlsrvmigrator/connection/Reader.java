@@ -27,30 +27,33 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import pe.org.incn.sqlsrvmigrator.database.Table;
+import pe.org.incn.sqlsrvmigrator.database.components.Table;
 
 public class Reader {
 
+    public boolean hasMigration(Connection connection, Table table) {
+        return migration(connection, table) != null;
+    }
+
     public Migration migration(Connection connection, Table table) {
-        Migration migration = new Migration();
-
         try (PreparedStatement statement = connection.prepareStatement(createQueryString())) {
-
             statement.setString(1, table.destination().isEmpty() ? table.location() : table.destination());
             ResultSet result = statement.executeQuery();
-
             while (result.next()) {
+                Migration migration = new Migration();
                 migration.setTable(result.getString("table_name"));
-                migration.setValue(result.getString("value"));
+                migration.setUpdateAt(result.getTimestamp("updated_at"));
+                return migration;
             }
+
         } catch (SQLException ex) {
             System.err.println("ERROR: migration table was not found -" + ex.getMessage());
         }
 
-        return migration;
+        return null;
     }
 
     private String createQueryString() {
-        return "select table_name, value from SQLSRV_migrations where table_name=?";
+        return "select table_name, updated_at from SQLSRV_migrations where table_name=?";
     }
 }

@@ -26,7 +26,7 @@ package pe.org.incn.sqlsrvmigrator.connection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import pe.org.incn.sqlsrvmigrator.database.Table;
+import pe.org.incn.sqlsrvmigrator.database.components.Table;
 
 public class Truncator {
 

@@ -23,18 +23,17 @@
  */
 package pe.org.incn.sqlsrvmigrator.connection.statements;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
-import pe.org.incn.sqlsrvmigrator.database.Table;
+import java.util.stream.Collectors;
+import pe.org.incn.sqlsrvmigrator.database.components.Table;
 
 public class UpdateQueryBuilder extends QueryBuilder {
 
-    protected String v(Table table, Field[] arrayFields) {
-        List<Field> fields = Arrays.asList(arrayFields);
-        String[] columns = Arrays.asList(getColumnsFrom(fields))
+    protected String v(Table table) {
+        List<String> columns = Arrays.asList(table.columns())
                 .stream().map(column -> String.format("%s=?", column))
-                .toArray(String[]::new);
+                .collect(Collectors.toList());
         return toPlainColumns(columns);
     }
 }

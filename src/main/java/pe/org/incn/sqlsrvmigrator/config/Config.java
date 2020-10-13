@@ -69,6 +69,6 @@ public final class Config {
     }
 
     protected File getConfigFile() {
-        return new File("C:\\config\\environment.yml").getAbsoluteFile();
+        return new File("G:\\web\\java\\SQLSRVMigrator\\src\\main\\java\\pe\\org\\incn\\sqlsrvmigrator\\config\\environment.yml").getAbsoluteFile();
     }
 }

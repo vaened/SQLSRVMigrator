@@ -31,6 +31,8 @@ public class Source {
 
     private String database;
 
+    private Option options;
+
     private boolean enabled;
 
     private Driver driver;
@@ -73,5 +75,17 @@ public class Source {
 
     public void setDriver(Driver driver) {
         this.driver = driver;
+    }
+
+    public Option getOptions() {
+        return options;
+    }
+
+    public void setOptions(Option options) {
+        this.options = options;
+    }
+
+    public boolean hasOptions() {
+        return getOptions() != null;
     }
 }

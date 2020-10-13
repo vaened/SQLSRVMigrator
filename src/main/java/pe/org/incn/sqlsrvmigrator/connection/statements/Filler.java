@@ -23,44 +23,46 @@
  */
 package pe.org.incn.sqlsrvmigrator.connection.statements;
 
-import java.lang.reflect.Field;
 import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import pe.org.incn.sqlsrvmigrator.database.Column;
-import pe.org.incn.sqlsrvmigrator.database.Model;
+import pe.org.incn.sqlsrvmigrator.database.components.Model;
+import pe.org.incn.sqlsrvmigrator.database.components.Value;
 
 public class Filler {
 
-    public <T extends Model> void setValue(T model, Field field, PreparedStatement statement, int parameter) throws IllegalArgumentException, IllegalAccessException, SQLException {
-        field.setAccessible(true);
+    public <T extends Model> void setValue(Value value, PreparedStatement statement, int parameter) throws SQLException {
 
-        if (field.getName().equals("deleted")) {
-            statement.setBoolean(parameter, model.isDeleted());
-            return;
-        }
-
-        Column column = field.getAnnotation(Column.class);
-        switch (column.type()) {
+        switch (value.getColumn().type()) {
             case STRING:
             case INTEGER:
             case FLOAT:
-                statement.setObject(parameter, field.get(model), column.type().getType());
+                setGeneralDataType(statement, value, parameter);
                 break;
 
             case DATE:
-                setDatestamp(statement, (Date) field.get(model), parameter);
+                setDatestamp(statement, value.getDateValue(), parameter);
                 break;
         }
     }
 
-    private void setDatestamp(PreparedStatement statement, Date date, int parameter) throws SQLException {
-        if (date != null) {
-            statement.setTimestamp(parameter, new Timestamp(date.getTime()));
-        } else {
-            statement.setNull(parameter, Types.TIMESTAMP);
+    private void setGeneralDataType(PreparedStatement statement, Value value, int parameter) throws SQLException {
+        if (value.getObjectValue() == null) {
+            statement.setNull(parameter, value.getType().key());
+            return;
         }
+
+        statement.setObject(parameter, value.getObjectValue(), value.getType().key());
+    }
+
+    private void setDatestamp(PreparedStatement statement, Date date, int parameter) throws SQLException {
+        if (date == null) {
+            statement.setNull(parameter, Types.TIMESTAMP);
+            return;
+        }
+
+        statement.setTimestamp(parameter, new Timestamp(date.getTime()));
     }
 }

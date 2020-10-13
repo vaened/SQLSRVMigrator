@@ -23,23 +23,24 @@
  */
 package pe.org.incn.sqlsrvmigrator.connection.statements;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
-import pe.org.incn.sqlsrvmigrator.database.Table;
+import java.util.List;
+import pe.org.incn.sqlsrvmigrator.database.components.Table;
 
 public class InsertQueryBuilder extends QueryBuilder {
 
-    public String getQueryString(Table table, Field[] fields) {
-        String[] columns = getColumnsFrom(Arrays.asList(fields));
-        return createQueryString(getNameFrom(table), toPlainColumns(columns), valuesOf(columns));
+    public String getQueryString(Table table) {
+        List<String> columns = getHeaderColumnsNames(Arrays.asList(table.columns()));
+        columns.add("UUID");
+        return createQueryString(getTableNameFrom(table), toPlainColumns(columns), valuesOf(columns));
     }
 
     protected String createQueryString(String table, String columns, String values) {
         return String.format("INSERT INTO %s (%s) values(%s)", table, columns, values);
     }
 
-    protected String valuesOf(String[] columns) {
-        return String.join(",", Collections.nCopies(columns.length, "?"));
+    protected String valuesOf(List<String> columns) {
+        return String.join(",", Collections.nCopies(columns.size(), "?"));
     }
 }

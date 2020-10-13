@@ -23,61 +23,50 @@
  */
 package pe.org.incn.sqlsrvmigrator.core.sismed;
 
-import java.util.Date;
-import pe.org.incn.sqlsrvmigrator.database.Column;
-import pe.org.incn.sqlsrvmigrator.database.Table;
+import java.util.List;
+import pe.org.incn.sqlsrvmigrator.database.components.Column;
+import pe.org.incn.sqlsrvmigrator.database.components.Table;
 import pe.org.incn.sqlsrvmigrator.database.Type;
-import pe.org.incn.sqlsrvmigrator.database.Model;
+import pe.org.incn.sqlsrvmigrator.database.components.Model;
+import pe.org.incn.sqlsrvmigrator.database.components.Value;
 
-@Table(connection = "sismed", location = "TMOVIMDET", destination = "SISMED_TMOVIMDET")
+@Table(
+        connection = "sismed",
+        location = "TMOVIMDET",
+        destination = "SISMED_TMOVIMDET",
+        columns = {
+            @Column(source = "MOVCODITIP", type = Type.STRING),
+            @Column(source = "MOVNUMERO", type = Type.STRING),
+            @Column(source = "MOVNUMEITE", type = Type.STRING),
+            @Column(source = "MEDCOD", type = Type.STRING),
+            @Column(source = "MEDCODIFAB", type = Type.STRING),
+            @Column(source = "MEDREGSAN", type = Type.STRING),
+            @Column(source = "MEDLOTE", type = Type.STRING),
+            @Column(source = "MOVSITUA", type = Type.STRING),
+            @Column(source = "N_PEDIDO", type = Type.STRING),
+            @Column(source = "N_PPA", type = Type.STRING),
+            @Column(source = "COD_SIGA", type = Type.STRING),
+            @Column(source = "MOVINDICON", type = Type.STRING),
+            @Column(source = "MOVREF", type = Type.STRING),
+            @Column(source = "ID_PROCESO", type = Type.STRING),
+            @Column(source = "MOVCANTID", type = Type.INTEGER),
+            @Column(source = "MOVPRECIO", type = Type.INTEGER),
+            @Column(source = "MOVTOTAL", type = Type.INTEGER),
+            @Column(source = "MOVCANTCON", type = Type.INTEGER),
+            @Column(source = "CORRELAT", type = Type.INTEGER),
+            @Column(source = "MOVCATCON", type = Type.INTEGER),
+            @Column(source = "MEDFECHVTO", type = Type.DATE),
+            @Column(source = "MOVFECHULT", type = Type.DATE),
+            @Column(source = "FECHAVRS", type = Type.DATE)
+        })
 public class MovementDetail extends Model {
 
-    @Column(name = "MOVCODITIP", type = Type.STRING)
-    String MOVCODITIP;
-    @Column(name = "MOVNUMERO", type = Type.STRING)
-    String MOVNUMERO;
-    @Column(name = "MOVNUMEITE", type = Type.STRING)
-    String MOVNUMEITE;
-    @Column(name = "MEDCOD", type = Type.STRING)
-    String MEDCOD;
-    @Column(name = "MEDCODIFAB", type = Type.STRING)
-    String MEDCODIFAB;
-    @Column(name = "MEDREGSAN", type = Type.STRING)
-    String MEDREGSAN;
-    @Column(name = "MEDLOTE", type = Type.STRING)
-    String MEDLOTE;
-    @Column(name = "MOVSITUA", type = Type.STRING)
-    String MOVSITUA;
-    @Column(name = "N_PEDIDO", type = Type.STRING)
-    String N_PEDIDO;
-    @Column(name = "N_PPA", type = Type.STRING)
-    String N_PPA;
-    @Column(name = "COD_SIGA", type = Type.STRING)
-    String COD_SIGA;
-    @Column(name = "MOVINDICON", type = Type.STRING)
-    String MOVINDICON;
-    @Column(name = "MOVREF", type = Type.STRING)
-    String MOVREF;
-    @Column(name = "ID_PROCESO", type = Type.STRING)
-    String ID_PROCESO;
+    public MovementDetail(List<Value> values) {
+        super(values);
+    }
 
-    @Column(name = "MOVCANTID", type = Type.INTEGER)
-    int MOVCANTID;
-    @Column(name = "MOVPRECIO", type = Type.INTEGER)
-    int MOVPRECIO;
-    @Column(name = "MOVTOTAL", type = Type.INTEGER)
-    int MOVTOTAL;
-    @Column(name = "MOVCANTCON", type = Type.INTEGER)
-    int MOVCANTCON;
-    @Column(name = "CORRELAT", type = Type.INTEGER)
-    int CORRELAT;
-    @Column(name = "MOVCATCON", type = Type.INTEGER)
-    int MOVCATCON;
-
-    @Column(name = "MEDFECHVTO", type = Type.DATE)
-    Date MEDFECHVTO;
-    @Column(name = "MOVFECHULT", type = Type.DATE)
-    Date MOVFECHULT;
-    @Column(name = "FECHAVRS", type = Type.DATE)
-    Date FECHAVRS;
+    
+    public String getSequencialUniqueValue() {
+        return getValueAttribute("MOVNUMERO").getStringValue();
+    }
 }

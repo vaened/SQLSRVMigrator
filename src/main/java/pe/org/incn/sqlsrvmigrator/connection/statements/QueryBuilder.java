@@ -23,27 +23,26 @@
  */
 package pe.org.incn.sqlsrvmigrator.connection.statements;
 
-import java.lang.reflect.Field;
 import java.util.List;
-import pe.org.incn.sqlsrvmigrator.database.Column;
-import pe.org.incn.sqlsrvmigrator.database.Table;
+import java.util.stream.Collectors;
+import pe.org.incn.sqlsrvmigrator.database.components.Column;
+import pe.org.incn.sqlsrvmigrator.database.components.Table;
 
 public class QueryBuilder {
 
-    protected String[] getColumnsFrom(List<Field> fields) {
-        return fields.stream().map(field -> getTableNameFrom(field)).toArray(String[]::new);
+    protected List<String> getHeaderColumnsNames(List<Column> columns) {
+        return columns.stream().map(field -> getColumnNameFrom(field)).collect(Collectors.toList());
     }
 
-    protected String getTableNameFrom(Field field) {
-        Column column = field.getAnnotation(Column.class);
-        return column.to().isEmpty() ? column.name() : column.to();
+    protected String getColumnNameFrom(Column column) {
+        return column.destination().isEmpty() ? column.source() : column.destination();
     }
 
-    protected String getNameFrom(Table table) {
+    protected String getTableNameFrom(Table table) {
         return table.destination().isEmpty() ? table.location() : table.destination();
     }
 
-    protected String toPlainColumns(String[] columns) {
+    protected String toPlainColumns(List<String> columns) {
         return String.join(",", columns);
     }
 }

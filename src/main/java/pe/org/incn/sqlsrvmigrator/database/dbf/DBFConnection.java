@@ -27,19 +27,10 @@ import com.linuxense.javadbf.DBFReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import pe.org.incn.sqlsrvmigrator.config.Config;
 import pe.org.incn.sqlsrvmigrator.database.FileConnection;
-import pe.org.incn.sqlsrvmigrator.database.Table;
+import pe.org.incn.sqlsrvmigrator.database.components.Table;
 
-/**
- *
- * @author enea dhack
- */
 public class DBFConnection extends FileConnection {
-
-    public DBFConnection(Config config) {
-        super(config);
-    }
 
     public DBFReader getTableFrom(Table table) throws FileNotFoundException {
         return this.toTable(new FileInputStream(this.getFilePath(table)));
@@ -56,4 +47,5 @@ public class DBFConnection extends FileConnection {
     private String getFilePath(Table table) {
         return getSourceFrom(table).getPath().concat(table.location() + ".dbf");
     }
+
 }

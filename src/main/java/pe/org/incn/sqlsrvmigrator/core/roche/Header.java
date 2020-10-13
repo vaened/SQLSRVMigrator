@@ -23,20 +23,28 @@
  */
 package pe.org.incn.sqlsrvmigrator.core.roche;
 
-import pe.org.incn.sqlsrvmigrator.database.Column;
-import pe.org.incn.sqlsrvmigrator.database.Model;
-import pe.org.incn.sqlsrvmigrator.database.Table;
+import java.util.List;
+import pe.org.incn.sqlsrvmigrator.database.components.Column;
+import pe.org.incn.sqlsrvmigrator.database.components.Model;
+import pe.org.incn.sqlsrvmigrator.database.components.Table;
 import pe.org.incn.sqlsrvmigrator.database.Type;
+import pe.org.incn.sqlsrvmigrator.database.components.Value;
 
-@Table(connection = "roche", location = "H", destination = "headers")
+@Table(
+        connection = "roche",
+        location = "H",
+        destination = "ROCHE_HEADERS",
+        columns = {
+            @Column(source = "3", type = Type.STRING, destination = "message_control"),
+            @Column(source = "5", type = Type.STRING, destination = "sender_name"),
+            @Column(source = "12", type = Type.STRING, destination = "processing_id"),
+            @Column(source = "14", type = Type.DATE, format = "yyyyMMddHHmmss", destination = "genereted_at"),}
+)
 public class Header extends Model {
 
-    @Column(name = "3", type = Type.STRING)
-    private String messageControlID;
+    public Header(List<Value> values) {
+        super(values);
+    }
 
-    @Column(name = "5", type = Type.STRING)
-    private String senderName;
-
-    @Column(name = "10", type = Type.STRING)
-    private String receiverName;
+ 
 }

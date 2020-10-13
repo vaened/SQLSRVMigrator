@@ -42,12 +42,7 @@ public enum Type {
         return this.sqlType;
     }
 
-    public static Type create(int key) {
-        for (Type type : values()) {
-            if (type.getType() == key) {
-                return type;
-            }
-        }
-        return null;
+    public int key() {
+        return getType();
     }
 }
